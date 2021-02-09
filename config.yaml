@@ -1,5 +1,5 @@
-baseURL: https://example.com
-title: Your title
+baseURL: dataspirits2.netlify.app
+title: naruse's day
 theme: hugo-theme-m10c
 paginate: 5
 menu:
@@ -17,6 +17,6 @@ params:
   menu_item_separator: ' - '
   social:
     - name: github
-      url: https://github.com/gohugoio
+      url: https://github.com/dataspirits
     - name: twitter
-      url: https://twitter.com/gohugoio
+      url: https://twitter.com/dataspirits1

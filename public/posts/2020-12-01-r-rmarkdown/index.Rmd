@@ -18,8 +18,8 @@ You can embed an R code chunk like this:
 
 ```{r cars}
 summary(cars)
-fit <- lm(dist ~ speed, data = cars)
-fit
+fits <- lm(dist ~ speed, data = cars)
+fits
 ```
 
 # Including Plots
