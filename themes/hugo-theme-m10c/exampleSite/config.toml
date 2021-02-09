@@ -1,4 +1,4 @@
-baseURL = "https://example.com"
+baseURL = "https://dataspirits2.netlify.app/"
 title = "Your title"
 themesDir = "../.."
 theme = "m10c"
@@ -23,7 +23,7 @@ paginate = 5
     url = "https://github.com/gohugoio"
   [[params.social]]
     name = "twitter"
-    url = "https://twitter.com/gohugoio"
+    url = "https://twitter.com/dataspirits1"
 
   # Brown theme
   #[params.style]
