@@ -1,9 +1,12 @@
 ---
 title: "このブログ作ったときのメモ"
 author: "なるせ"
-date: 2021-02-10T09:00:00-05:00
-categories: ["R"]
-tags: ["R Markdown", "blogdown", "Netlify"]
+date: '2021-02-10T09:00:00-05:00'
+categories: R
+tags:
+- R Markdown
+- blogdown
+- Netlify
 ---
 
 ```{r setup, include=FALSE}
