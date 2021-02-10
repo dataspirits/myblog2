@@ -1,5 +1,5 @@
 ---
-title: "non Japanese version"
+title: "non Japanese version public"
 author: "naruse"
 date: '2021-02-10'
 categories:
