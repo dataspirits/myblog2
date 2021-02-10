@@ -57,6 +57,9 @@ build_site()
 # 反映内容を確認
 serve_site()
 
+#pushする前にこれを実行する？
+blogdown::stop_server()
+
 #こういうのも必要らしいがまだやってない
 publishDir = "docs"
 hasCJKLanguage = true
