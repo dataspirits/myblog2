@@ -1,13 +1,14 @@
 ---
-title: "Hello R Markdown"
-author: "Frida Gomam"
-date: '2020-12-01T21:13:14-05:00'
-categories: R
+title: non Japanese version
+author: naruse
+date: '2021-02-10'
+slug: []
+categories:
+  - R
 tags:
-- R Markdown
-- plot
-- regression
+  - blogdown
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
