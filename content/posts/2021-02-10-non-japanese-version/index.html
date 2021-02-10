@@ -1,5 +1,5 @@
 ---
-title: "contentだけでいいのか？"
+title: "このブログ作ったときのメモ"
 author: "naruse"
 date: '2021-02-10'
 categories:
@@ -13,8 +13,8 @@ tags:
 
 <div id="r-blogdown" class="section level1">
 <h1>R blogdown</h1>
-<p>Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>You can embed an R code chunk like this:</p>
+<p>Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。
+環境構築時のコードをメモ。</p>
 <pre class="r"><code># blogdownのインストール
 devtools::install_github(&#39;rstudio/blogdown&#39;)
 
@@ -55,5 +55,6 @@ new_content(&quot;post/newContent.Rmd&quot;)
 <p>notepadいらねえなこれ。</p>
 <p>記事追加する時や編集するときはpublicじゃなくてcontentのほうを編集するっぽい。</p>
 <p>で、Knitしてpush。</p>
+<p>pushするときにチェックつけていくんだがTool→Shellで「git add -A」と打てばおｋ。</p>
 <p>アドインでNew postを使ったときは出来上がりの.Rmdのタイトルとかに""がつかないので注意。</p>
 </div>
