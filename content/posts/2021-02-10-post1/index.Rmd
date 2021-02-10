@@ -1,0 +1,12 @@
+---
+title: "今度こそ一発で"
+author: "naruse"
+date: '2021-02-10'
+slug: []
+categories:
+  - R
+tags:
+  - blogdown
+---
+
+今度こそ一発で行きたい。
