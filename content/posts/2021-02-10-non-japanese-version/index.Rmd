@@ -1,8 +1,7 @@
 ---
-title: non Japanese version
-author: naruse
+title: "non Japanese version"
+author: "naruse"
 date: '2021-02-10'
-slug: []
 categories:
   - R
 tags:
@@ -31,7 +30,7 @@ blogdown::install_hugo()
 
 # Including Plots
 
-なおRmarkdownでコードを実行するかどうかは次の通り。 See Figure \@ref(fig:pie) for example:
+なおRmarkdownでコードを実行するかどうかは次の通り。:
 
 ```{r pie, fig.cap='A fancy pie chart.', tidy=FALSE , eval=FALSE}
 include	#コードと結果を表示しない
