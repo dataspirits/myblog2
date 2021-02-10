@@ -1,0 +1,43 @@
+---
+title: "図表もちゃんと出るか確認した"
+author: "naruse"
+date: '2021-02-10'
+slug: post5
+categories:
+  - R
+tags:
+  - ggplot
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<pre class="r"><code>library(tidyverse)
+library(tidyquant)
+FANG</code></pre>
+<pre><code>## # A tibble: 4,032 x 8
+##    symbol date        open  high   low close    volume adjusted
+##    &lt;chr&gt;  &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1 FB     2013-01-02  27.4  28.2  27.4  28    69846400     28  
+##  2 FB     2013-01-03  27.9  28.5  27.6  27.8  63140600     27.8
+##  3 FB     2013-01-04  28.0  28.9  27.8  28.8  72715400     28.8
+##  4 FB     2013-01-07  28.7  29.8  28.6  29.4  83781800     29.4
+##  5 FB     2013-01-08  29.5  29.6  28.9  29.1  45871300     29.1
+##  6 FB     2013-01-09  29.7  30.6  29.5  30.6 104787700     30.6
+##  7 FB     2013-01-10  30.6  31.5  30.3  31.3  95316400     31.3
+##  8 FB     2013-01-11  31.3  32.0  31.1  31.7  89598000     31.7
+##  9 FB     2013-01-14  32.1  32.2  30.6  31.0  98892800     31.0
+## 10 FB     2013-01-15  30.6  31.7  29.9  30.1 173242600     30.1
+## # ... with 4,022 more rows</code></pre>
+</div>
+<div id="including-plots" class="section level2">
+<h2>Including Plots</h2>
+<p>gglotを使ってみる。:</p>
+<pre class="r"><code>p &lt;- ggplot(data = FANG, mapping = aes(x=date, y=adjusted))
+p + geom_line() +
+    facet_wrap(~symbol, nrow = 2, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot-1.png" width="672" /></p>
+<p>うまくいった。</p>
+</div>
