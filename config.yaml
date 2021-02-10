@@ -1,5 +1,5 @@
 baseURL: https://dataspirits2.netlify.app/
-title: naruse's day
+title: DataSpirits for R
 theme: hugo-theme-m10c
 paginate: 5
 menu:
@@ -11,8 +11,8 @@ menu:
       name: Tags
       url: /tags/
 params:
-  author: John Doe
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula
+  author: naruse
+  description: あLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula
     turpis sit amet elit pretium.
   menu_item_separator: ' - '
   social:
