@@ -69,4 +69,7 @@ new_content("post/newContent.Rmd")
 notepadいらねえなこれ。
 
 記事追加する時や編集するときはpublicじゃなくてcontentのほうを編集するっぽい。
+
 で、Knitしてpush。
+
+アドインでNew postを使ったときは出来上がりの.Rmdのタイトルとかに""がつかないので注意。
