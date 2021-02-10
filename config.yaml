@@ -12,7 +12,9 @@ menu:
       url: /tags/
 params:
   author: naruse
-  description: あLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula
+  description: 都内の金融機関でデータサイエンスや金融工学の仕事をしてます。
+    現在はほぼテレワーク。たまに金融や統計に関するブログを更新します。
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula
     turpis sit amet elit pretium.
   menu_item_separator: ' - '
   social:

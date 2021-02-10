@@ -10,28 +10,57 @@ tags: ["R Markdown", "plot", "regression"]
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-# R Markdown
+# R blogdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
-fits <- lm(dist ~ speed, data = cars)
-fits
+```{r cars ,eval=FALSE}
+# blogdownのインストール
+devtools::install_github('rstudio/blogdown')
+
+# hugoのインストール
+library(blogdown)
+blogdown::install_hugo()
 ```
 
 # Including Plots
 
-You can also embed plots. See Figure \@ref(fig:pie) for example:
+なおRmarkdownでコードを実行するかどうかは次の通り。 See Figure \@ref(fig:pie) for example:
 
-```{r pie, fig.cap='A fancy pie chart.', tidy=FALSE}
-par(mar = c(0, 1, 0, 1))
-pie(
-  c(280, 60, 20),
-  c('Sky', 'Sunny side of pyramid', 'Shady side of pyramid'),
-  col = c('#0292D8', '#F7EA39', '#C4B632'),
-  init.angle = -50, border = NA
-)
+```{r pie, fig.cap='A fancy pie chart.', tidy=FALSE , eval=FALSE}
+include	#コードと結果を表示しない
+echo	#コードを表示しない
+message	#メッセージを表示しない
+eval	#コードを実行しない
 ```
+
+プロジェクトを作成した後↓
+
+```{r new, eval=FALSE}
+
+#最初に
+new_site()
+
+#これはちょっと古いっぽい
+new_site(theme="alanorth/hugo-theme-bootstrap4-blog")
+
+#このブログはこれ
+new_site(theme="vaga/hugo-theme-m10c")
+
+# 編集内容を反映し統合
+build_site()
+# 反映内容を確認
+serve_site()
+
+#こういうのも必要らしいがまだやってない
+publishDir = "docs"
+hasCJKLanguage = true
+
+#これも未使用
+new_content("post/newContent.Rmd")
+
+```
+
+notepadいらねえなこれ。
