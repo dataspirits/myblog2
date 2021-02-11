@@ -66,8 +66,8 @@ nd_join_long &lt;-nd_join %&gt;%
 #可視化
 p1 &lt;- ggplot(nd_join_long,mapping = aes(x=date,y=price,color=index))
 p1 + geom_line()</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot1-1.png" width="672" />
-3種類のローリング相関係数を算出</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot1-1.png" width="672" /></p>
+<p>3種類のローリング相関係数を算出</p>
 <pre class="r"><code>rolling_90 &lt;- nd_join %&gt;% 
   tq_transmute_xy(x=nky_r,
                   y=dji_r,
