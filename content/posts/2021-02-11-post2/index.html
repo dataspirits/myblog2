@@ -1,0 +1,100 @@
+---
+title: "日経とダウの相関"
+author: "naruse"
+date: '2021-02-11'
+slug: []
+categories:
+  - R
+tags:
+  - tidyquant
+  - ggplot
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Excelで日経とダウ（前日）の相関係数を計算して何回かツイートしたが、これもRでやってしまおう。
+金融系の分析に便利な{tidyquant}を使う。</p>
+<pre class="r"><code>#パッケージの読み込み
+library(tidyverse)
+library(tidyquant)</code></pre>
+<p>td_get関数でYahoo!financeから取得してくれる。更新したくなったらコードを丸々再実行すればいい。めっちゃ楽。</p>
+<pre class="r"><code>#データ取得
+nky &lt;- tq_get(&quot;^N225&quot;, from=&quot;2018-01-01&quot;) %&gt;% 
+  select(date,adjusted)
+
+#ダウは１日遅れのデータ            
+dji_lag &lt;- tq_get(&quot;^DJI&quot;, from=&quot;2018-01-01&quot;) %&gt;% 
+  tq_transmute(select=adjusted,
+               mutate_fun = Lag)
+
+#結合してNAを削除して対数リターンを算出
+nd_join &lt;- inner_join(nky,dji_lag,by=&quot;date&quot;) %&gt;% 
+  rename(nky=2,dji=3) %&gt;% 
+  drop_na() %&gt;% 
+  tq_mutate(select=nky,
+            mutate_fun = periodReturn,
+            period=&quot;daily&quot;,
+            type=&quot;log&quot;,
+            col_rename = &quot;nky_r&quot;) %&gt;% 
+  tq_mutate(select=dji,
+            mutate_fun = periodReturn,
+            period=&quot;daily&quot;,
+            type=&quot;log&quot;,
+            col_rename = &quot;dji_r&quot;) 
+
+nd_join</code></pre>
+<pre><code>## # A tibble: 730 x 5
+##    date          nky    dji    nky_r     dji_r
+##    &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 2018-01-04 23506. 24923.  0        0       
+##  2 2018-01-05 23715. 25075.  0.00882  0.00610 
+##  3 2018-01-09 23850. 25283   0.00570  0.00826 
+##  4 2018-01-10 23788. 25386. -0.00259  0.00406 
+##  5 2018-01-11 23710. 25369. -0.00327 -0.000657
+##  6 2018-01-12 23654. 25575. -0.00239  0.00807 
+##  7 2018-01-16 23952. 25803.  0.0125   0.00889 
+##  8 2018-01-17 23868. 25793. -0.00349 -0.000400
+##  9 2018-01-18 23763. 26116. -0.00441  0.0124  
+## 10 2018-01-19 23808. 26018.  0.00188 -0.00375 
+## # ... with 720 more rows</code></pre>
+<p>一旦可視化</p>
+<pre class="r"><code>#ggplot用にlong型に変換
+nd_join_long &lt;-nd_join %&gt;% 
+  gather(key = index, value = price,nky,dji)
+
+#可視化
+p1 &lt;- ggplot(nd_join_long,mapping = aes(x=date,y=price,color=index))
+p1 + geom_line()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot1-1.png" width="672" />
+3種類のローリング相関係数を算出</p>
+<pre class="r"><code>rolling_90 &lt;- nd_join %&gt;% 
+  tq_transmute_xy(x=nky_r,
+                  y=dji_r,
+                  mutate_fun = runCor,
+                  n=90,
+                  col_rename = &quot;rolling.corr.090&quot;)
+
+rolling_150 &lt;- nd_join %&gt;% 
+  tq_transmute_xy(x=nky_r,
+                  y=dji_r,
+                  mutate_fun = runCor,
+                  n=150,
+                  col_rename = &quot;rolling.corr.150&quot;)
+
+rolling_200 &lt;- nd_join %&gt;% 
+  tq_transmute_xy(x=nky_r,
+                  y=dji_r,
+                  mutate_fun = runCor,
+                  n=200,
+                  col_rename = &quot;rolling.corr.200&quot;)
+
+rolling_join &lt;- left_join(rolling_90,rolling_150,by=&quot;date&quot;) %&gt;% 
+  left_join(rolling_200,by=&quot;date&quot;) %&gt;% 
+  gather(key = term, 
+         value = corr,rolling.corr.090,rolling.corr.150,rolling.corr.200)</code></pre>
+<p>最後にggplotして終わり。</p>
+<pre class="r"><code>p2 &lt;- ggplot(rolling_join, mapping = aes(x=date,y=corr,color=term))
+p2 +  geom_line() + scale_y_continuous(limits = c(0,1))</code></pre>
+<pre><code>## Warning: Removed 437 row(s) containing missing values (geom_path).</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot2-1.png" width="672" /></p>

@@ -1,0 +1,106 @@
+---
+title: "日経とダウの相関"
+author: "naruse"
+date: '2021-02-11'
+slug: []
+categories:
+  - R
+tags:
+  - tidyquant
+  - ggplot
+---
+
+Excelで日経とダウ（前日）の相関係数を計算して何回かツイートしたが、これもRでやってしまおう。
+金融系の分析に便利な{tidyquant}を使う。
+
+```{r library, message=FALSE}
+#パッケージの読み込み
+library(tidyverse)
+library(tidyquant)
+```
+
+td_get関数でYahoo!financeから取得してくれる。更新したくなったらコードを丸々再実行すればいい。めっちゃ楽。
+
+```{r getdata}
+
+#データ取得
+nky <- tq_get("^N225", from="2018-01-01") %>% 
+  select(date,adjusted)
+
+#ダウは１日遅れのデータ            
+dji_lag <- tq_get("^DJI", from="2018-01-01") %>% 
+  tq_transmute(select=adjusted,
+               mutate_fun = Lag)
+
+#結合してNAを削除して対数リターンを算出
+nd_join <- inner_join(nky,dji_lag,by="date") %>% 
+  rename(nky=2,dji=3) %>% 
+  drop_na() %>% 
+  tq_mutate(select=nky,
+            mutate_fun = periodReturn,
+            period="daily",
+            type="log",
+            col_rename = "nky_r") %>% 
+  tq_mutate(select=dji,
+            mutate_fun = periodReturn,
+            period="daily",
+            type="log",
+            col_rename = "dji_r") 
+
+nd_join
+
+```
+
+一旦可視化
+
+```{r plot1}
+#ggplot用にlong型に変換
+nd_join_long <-nd_join %>% 
+  gather(key = index, value = price,nky,dji)
+
+#可視化
+p1 <- ggplot(nd_join_long,mapping = aes(x=date,y=price,color=index))
+p1 + geom_line()
+
+```
+3種類のローリング相関係数を算出
+
+```{r corr}
+rolling_90 <- nd_join %>% 
+  tq_transmute_xy(x=nky_r,
+                  y=dji_r,
+                  mutate_fun = runCor,
+                  n=90,
+                  col_rename = "rolling.corr.090")
+
+rolling_150 <- nd_join %>% 
+  tq_transmute_xy(x=nky_r,
+                  y=dji_r,
+                  mutate_fun = runCor,
+                  n=150,
+                  col_rename = "rolling.corr.150")
+
+rolling_200 <- nd_join %>% 
+  tq_transmute_xy(x=nky_r,
+                  y=dji_r,
+                  mutate_fun = runCor,
+                  n=200,
+                  col_rename = "rolling.corr.200")
+
+rolling_join <- left_join(rolling_90,rolling_150,by="date") %>% 
+  left_join(rolling_200,by="date") %>% 
+  gather(key = term, 
+         value = corr,rolling.corr.090,rolling.corr.150,rolling.corr.200)
+
+```
+
+最後にggplotして終わり。
+
+
+```{r plot2}
+p2 <- ggplot(rolling_join, mapping = aes(x=date,y=corr,color=term))
+p2 +  geom_line() + scale_y_continuous(limits = c(0,1))
+```
+
+
+
