@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>R on DataSpirits for R</title>
-    <link>https://dataspirits2.netlify.app/categories/r/</link>
-    <description>Recent content in R on DataSpirits for R</description>
+    <title>ggplot on DataSpirits for R</title>
+    <link>https://dataspirits2.netlify.app/tags/ggplot/</link>
+    <description>Recent content in ggplot on DataSpirits for R</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 11 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://dataspirits2.netlify.app/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 11 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://dataspirits2.netlify.app/tags/ggplot/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>日経とダウの相関</title>
       <link>https://dataspirits2.netlify.app/posts/2021-02-11-post2/</link>
@@ -15,23 +15,6 @@
       <description>Excelで日経とダウ（前日）の相関係数を計算して何回かツイートしたが、これもRでやってしまおう。金融系の分析に便利な{tidyquant}を使う。
 #パッケージの読み込みlibrary(tidyverse)library(tidyquant)td_get関数でYahoo!financeから取得してくれる。更新したくなったらコードを丸々再実行すればいい。めっちゃ楽。
 #データ取得nky &amp;lt;- tq_get(&amp;quot;^N225&amp;quot;, from=&amp;quot;2018-01-01&amp;quot;) %&amp;gt;% select(date,adjusted)#ダウは１日遅れのデータ dji_lag &amp;lt;- tq_get(&amp;quot;^DJI&amp;quot;, from=&amp;quot;2018-01-01&amp;quot;) %&amp;gt;% tq_transmute(select=adjusted,mutate_fun = Lag)#結合してNAを削除して対数リターンを算出nd_join &amp;lt;- inner_join(nky,dji_lag,by=&amp;quot;date&amp;quot;) %&amp;gt;% rename(nky=2,dji=3) %&amp;gt;% drop_na() %&amp;gt;% tq_mutate(select=nky,mutate_fun = periodReturn,period=&amp;quot;daily&amp;quot;,type=&amp;quot;log&amp;quot;,col_rename = &amp;quot;nky_r&amp;quot;) %&amp;gt;% tq_mutate(select=dji,mutate_fun = periodReturn,period=&amp;quot;daily&amp;quot;,type=&amp;quot;log&amp;quot;,col_rename = &amp;quot;dji_r&amp;quot;) nd_join## # A tibble: 730 x 5## date nky dji nky_r dji_r## &amp;lt;date&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;## 1 2018-01-04 23506.</description>
-    </item>
-    
-    <item>
-      <title>このブログ作ったときのメモ</title>
-      <link>https://dataspirits2.netlify.app/posts/2021-02-10-non-japanese-version/</link>
-      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://dataspirits2.netlify.app/posts/2021-02-10-non-japanese-version/</guid>
-      <description>R blogdownRでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 環境構築時のコードをメモ。
-# blogdownのインストールdevtools::install_github(&amp;#39;rstudio/blogdown&amp;#39;)# hugoのインストールlibrary(blogdown)blogdown::install_hugo()Including PlotsなおRmarkdownでコードを実行するかどうかは次の通り。:
-include #コードと結果を表示しないecho #コードを表示しないmessage #メッセージを表示しないeval #コードを実行しないプロジェクトを作成した後↓
-#最初にnew_site()#これはちょっと古いっぽいnew_site(theme=&amp;quot;alanorth/hugo-theme-bootstrap4-blog&amp;quot;)#このブログはこれnew_site(theme=&amp;quot;vaga/hugo-theme-m10c&amp;quot;)# 編集内容を反映し統合build_site()# 反映内容を確認serve_site()#こういうのも必要らしいがまだやってないpublishDir = &amp;quot;docs&amp;quot;hasCJKLanguage = true#これも未使用new_content(&amp;quot;post/newContent.Rmd&amp;quot;)notepadいらねえなこれ。
-記事追加する時や編集するときはpublicじゃなくてcontentのほうを編集するっぽい。
-で、Knitしてpush。
-pushするときにチェックつけていくんだがTool→Shellで「git add -A」と打てばおｋ。
-アドインでNew postを使ったときは出来上がりの.Rmdのタイトルとかに&#34;&#34;がつかないので注意。
-</description>
     </item>
     
     <item>

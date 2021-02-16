@@ -1,0 +1,23 @@
+---
+title: "壊れているパッケージの有無を確認"
+author: "naruse"
+date: '2021-02-16'
+slug: []
+categories:
+  - R
+tags:
+  - tips
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>タイトルの通り。</p>
+<pre class="r"><code>allPackages &lt;- installed.packages()[, 1]
+findBrokenPackages &lt;- function(packages) {
+  for (p in packages) {
+    tryCatch(ncol(asNamespace(p)$.__NAMESPACE__.$S3methods),
+             error = function(e) print(c(p, e)))
+  }
+}
+findBrokenPackages(allPackages)</code></pre>

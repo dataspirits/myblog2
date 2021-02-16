@@ -2,21 +2,16 @@
 title: "このブログ作ったときのメモ"
 author: "naruse"
 date: '2021-02-10'
-categories:
+slug: []
+categories: 
   - R
-tags:
+tags: 
   - blogdown
 ---
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE)
-```
-
 # R blogdown
 
-Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。
-環境構築時のコードをメモ。
+Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 環境構築時のコードをメモ。
 
 ```{r cars ,eval=FALSE}
 # blogdownのインストール

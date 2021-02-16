@@ -2,9 +2,10 @@
 title: "このブログ作ったときのメモ"
 author: "naruse"
 date: '2021-02-10'
-categories:
+slug: []
+categories: 
   - R
-tags:
+tags: 
   - blogdown
 ---
 
@@ -13,8 +14,7 @@ tags:
 
 <div id="r-blogdown" class="section level1">
 <h1>R blogdown</h1>
-<p>Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。
-環境構築時のコードをメモ。</p>
+<p>Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 環境構築時のコードをメモ。</p>
 <pre class="r"><code># blogdownのインストール
 devtools::install_github(&#39;rstudio/blogdown&#39;)
 
@@ -30,8 +30,7 @@ echo    #コードを表示しない
 message #メッセージを表示しない
 eval    #コードを実行しない</code></pre>
 <p>プロジェクトを作成した後↓</p>
-<pre class="r"><code>
-#最初に
+<pre class="r"><code>#最初に
 new_site()
 
 #これはちょっと古いっぽい
@@ -50,8 +49,7 @@ publishDir = &quot;docs&quot;
 hasCJKLanguage = true
 
 #これも未使用
-new_content(&quot;post/newContent.Rmd&quot;)
-</code></pre>
+new_content(&quot;post/newContent.Rmd&quot;)</code></pre>
 <p>notepadいらねえなこれ。</p>
 <p>記事追加する時や編集するときはpublicじゃなくてcontentのほうを編集するっぽい。</p>
 <p>で、Knitしてpush。</p>

@@ -1,5 +1,5 @@
 ---
-title: "non Japanese version public"
+title: "このブログ作ったときのメモ"
 author: "naruse"
 date: '2021-02-10'
 categories:
@@ -8,16 +8,13 @@ tags:
   - blogdown
 ---
 
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE)
+knitr::opts_chunk$set(collapse = FALSE)
 ```
 
 # R blogdown
 
-Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-You can embed an R code chunk like this:
+Rでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 環境構築時のコードをメモ。
 
 ```{r cars ,eval=FALSE}
 # blogdownのインストール
@@ -30,7 +27,7 @@ blogdown::install_hugo()
 
 # Including Plots
 
-なおRmarkdownでコードを実行するかどうかは次の通り。 See Figure \@ref(fig:pie) for example:
+なおRmarkdownでコードを実行するかどうかは次の通り。:
 
 ```{r pie, fig.cap='A fancy pie chart.', tidy=FALSE , eval=FALSE}
 include	#コードと結果を表示しない
@@ -67,3 +64,11 @@ new_content("post/newContent.Rmd")
 ```
 
 notepadいらねえなこれ。
+
+記事追加する時や編集するときはpublicじゃなくてcontentのほうを編集するっぽい。
+
+で、Knitしてpush。
+
+pushするときにチェックつけていくんだがTool→Shellで「git add -A」と打てばおｋ。
+
+アドインでNew postを使ったときは出来上がりの.Rmdのタイトルとかに""がつかないので注意。

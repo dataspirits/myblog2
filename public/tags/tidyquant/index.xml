@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tidyquant on DataSpirits for R</title>
+    <link>https://dataspirits2.netlify.app/tags/tidyquant/</link>
+    <description>Recent content in tidyquant on DataSpirits for R</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 11 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://dataspirits2.netlify.app/tags/tidyquant/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>日経とダウの相関</title>
+      <link>https://dataspirits2.netlify.app/posts/2021-02-11-post2/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dataspirits2.netlify.app/posts/2021-02-11-post2/</guid>
+      <description>Excelで日経とダウ（前日）の相関係数を計算して何回かツイートしたが、これもRでやってしまおう。金融系の分析に便利な{tidyquant}を使う。
+#パッケージの読み込みlibrary(tidyverse)library(tidyquant)td_get関数でYahoo!financeから取得してくれる。更新したくなったらコードを丸々再実行すればいい。めっちゃ楽。
+#データ取得nky &amp;lt;- tq_get(&amp;quot;^N225&amp;quot;, from=&amp;quot;2018-01-01&amp;quot;) %&amp;gt;% select(date,adjusted)#ダウは１日遅れのデータ dji_lag &amp;lt;- tq_get(&amp;quot;^DJI&amp;quot;, from=&amp;quot;2018-01-01&amp;quot;) %&amp;gt;% tq_transmute(select=adjusted,mutate_fun = Lag)#結合してNAを削除して対数リターンを算出nd_join &amp;lt;- inner_join(nky,dji_lag,by=&amp;quot;date&amp;quot;) %&amp;gt;% rename(nky=2,dji=3) %&amp;gt;% drop_na() %&amp;gt;% tq_mutate(select=nky,mutate_fun = periodReturn,period=&amp;quot;daily&amp;quot;,type=&amp;quot;log&amp;quot;,col_rename = &amp;quot;nky_r&amp;quot;) %&amp;gt;% tq_mutate(select=dji,mutate_fun = periodReturn,period=&amp;quot;daily&amp;quot;,type=&amp;quot;log&amp;quot;,col_rename = &amp;quot;dji_r&amp;quot;) nd_join## # A tibble: 730 x 5## date nky dji nky_r dji_r## &amp;lt;date&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;## 1 2018-01-04 23506.</description>
+    </item>
+    
+  </channel>
+</rss>

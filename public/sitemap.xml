@@ -3,37 +3,57 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://dataspirits2.netlify.app/categories/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dataspirits2.netlify.app/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dataspirits2.netlify.app/tags/ggplot/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dataspirits2.netlify.app/posts/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dataspirits2.netlify.app/categories/r/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dataspirits2.netlify.app/tags/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dataspirits2.netlify.app/tags/tidyquant/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dataspirits2.netlify.app/posts/2021-02-11-post2/</loc>
+    <lastmod>2021-02-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://dataspirits2.netlify.app/tags/blogdown/</loc>
     <lastmod>2021-02-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dataspirits2.netlify.app/categories/</loc>
+    <loc>https://dataspirits2.netlify.app/posts/2021-02-10-non-japanese-version/</loc>
     <lastmod>2021-02-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dataspirits2.netlify.app/</loc>
-    <lastmod>2021-02-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://dataspirits2.netlify.app/posts/</loc>
-    <lastmod>2021-02-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://dataspirits2.netlify.app/categories/r/</loc>
-    <lastmod>2021-02-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://dataspirits2.netlify.app/posts/2021-02-10-rmarkdown-github-hugo-blogdown-netlify/</loc>
-    <lastmod>2021-02-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://dataspirits2.netlify.app/tags/</loc>
+    <loc>https://dataspirits2.netlify.app/posts/post5/</loc>
     <lastmod>2021-02-10T00:00:00+00:00</lastmod>
   </url>
   
@@ -140,11 +160,6 @@
   <url>
     <loc>https://dataspirits2.netlify.app/posts/test-4/</loc>
     <lastmod>1012-01-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://dataspirits2.netlify.app/posts/test-3/</loc>
-    <lastmod>1012-01-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>

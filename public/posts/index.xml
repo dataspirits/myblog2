@@ -5,14 +5,42 @@
     <link>https://dataspirits2.netlify.app/posts/</link>
     <description>Recent content in Posts on DataSpirits for R</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 10 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://dataspirits2.netlify.app/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 11 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://dataspirits2.netlify.app/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>RMarkdown &#43; Github &#43;Hugo &#43; Blogdown &#43; Netlify</title>
-      <link>https://dataspirits2.netlify.app/posts/2021-02-10-rmarkdown-github-hugo-blogdown-netlify/</link>
+      <title>日経とダウの相関</title>
+      <link>https://dataspirits2.netlify.app/posts/2021-02-11-post2/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dataspirits2.netlify.app/posts/2021-02-11-post2/</guid>
+      <description>Excelで日経とダウ（前日）の相関係数を計算して何回かツイートしたが、これもRでやってしまおう。金融系の分析に便利な{tidyquant}を使う。
+#パッケージの読み込みlibrary(tidyverse)library(tidyquant)td_get関数でYahoo!financeから取得してくれる。更新したくなったらコードを丸々再実行すればいい。めっちゃ楽。
+#データ取得nky &amp;lt;- tq_get(&amp;quot;^N225&amp;quot;, from=&amp;quot;2018-01-01&amp;quot;) %&amp;gt;% select(date,adjusted)#ダウは１日遅れのデータ dji_lag &amp;lt;- tq_get(&amp;quot;^DJI&amp;quot;, from=&amp;quot;2018-01-01&amp;quot;) %&amp;gt;% tq_transmute(select=adjusted,mutate_fun = Lag)#結合してNAを削除して対数リターンを算出nd_join &amp;lt;- inner_join(nky,dji_lag,by=&amp;quot;date&amp;quot;) %&amp;gt;% rename(nky=2,dji=3) %&amp;gt;% drop_na() %&amp;gt;% tq_mutate(select=nky,mutate_fun = periodReturn,period=&amp;quot;daily&amp;quot;,type=&amp;quot;log&amp;quot;,col_rename = &amp;quot;nky_r&amp;quot;) %&amp;gt;% tq_mutate(select=dji,mutate_fun = periodReturn,period=&amp;quot;daily&amp;quot;,type=&amp;quot;log&amp;quot;,col_rename = &amp;quot;dji_r&amp;quot;) nd_join## # A tibble: 730 x 5## date nky dji nky_r dji_r## &amp;lt;date&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;## 1 2018-01-04 23506.</description>
+    </item>
+    
+    <item>
+      <title>このブログ作ったときのメモ</title>
+      <link>https://dataspirits2.netlify.app/posts/2021-02-10-non-japanese-version/</link>
       <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://dataspirits2.netlify.app/posts/2021-02-10-rmarkdown-github-hugo-blogdown-netlify/</guid>
-      <description></description>
+      <guid>https://dataspirits2.netlify.app/posts/2021-02-10-non-japanese-version/</guid>
+      <description>R blogdownRでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 環境構築時のコードをメモ。
+# blogdownのインストールdevtools::install_github(&amp;#39;rstudio/blogdown&amp;#39;)# hugoのインストールlibrary(blogdown)blogdown::install_hugo()Including PlotsなおRmarkdownでコードを実行するかどうかは次の通り。:
+include #コードと結果を表示しないecho #コードを表示しないmessage #メッセージを表示しないeval #コードを実行しないプロジェクトを作成した後↓
+#最初にnew_site()#これはちょっと古いっぽいnew_site(theme=&amp;quot;alanorth/hugo-theme-bootstrap4-blog&amp;quot;)#このブログはこれnew_site(theme=&amp;quot;vaga/hugo-theme-m10c&amp;quot;)# 編集内容を反映し統合build_site()# 反映内容を確認serve_site()#こういうのも必要らしいがまだやってないpublishDir = &amp;quot;docs&amp;quot;hasCJKLanguage = true#これも未使用new_content(&amp;quot;post/newContent.Rmd&amp;quot;)notepadいらねえなこれ。
+記事追加する時や編集するときはpublicじゃなくてcontentのほうを編集するっぽい。
+で、Knitしてpush。
+pushするときにチェックつけていくんだがTool→Shellで「git add -A」と打てばおｋ。
+アドインでNew postを使ったときは出来上がりの.Rmdのタイトルとかに&#34;&#34;がつかないので注意。
+</description>
+    </item>
+    
+    <item>
+      <title>図表もちゃんと出るか確認した</title>
+      <link>https://dataspirits2.netlify.app/posts/post5/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dataspirits2.netlify.app/posts/post5/</guid>
+      <description>R Markdownlibrary(tidyverse)library(tidyquant)FANG## # A tibble: 4,032 x 8## symbol date open high low close volume adjusted## &amp;lt;chr&amp;gt; &amp;lt;date&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;## 1 FB 2013-01-02 27.4 28.2 27.4 28 69846400 28 ## 2 FB 2013-01-03 27.9 28.5 27.6 27.8 63140600 27.8## 3 FB 2013-01-04 28.0 28.9 27.8 28.8 72715400 28.8## 4 FB 2013-01-07 28.7 29.8 28.6 29.4 83781800 29.</description>
     </item>
     
     <item>
@@ -112,15 +140,6 @@ Follow the following steps:
       
       <guid>https://dataspirits2.netlify.app/posts/test-4/</guid>
       <description>Test 4</description>
-    </item>
-    
-    <item>
-      <title>Test 3</title>
-      <link>https://dataspirits2.netlify.app/posts/test-3/</link>
-      <pubDate>Fri, 03 Jan 1012 00:00:00 +0000</pubDate>
-      
-      <guid>https://dataspirits2.netlify.app/posts/test-3/</guid>
-      <description>Test 3</description>
     </item>
     
     <item>

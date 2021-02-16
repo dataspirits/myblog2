@@ -7,12 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Wed, 10 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://dataspirits2.netlify.app/tags/blogdown/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>RMarkdown &#43; Github &#43;Hugo &#43; Blogdown &#43; Netlify</title>
-      <link>https://dataspirits2.netlify.app/posts/2021-02-10-rmarkdown-github-hugo-blogdown-netlify/</link>
+      <title>このブログ作ったときのメモ</title>
+      <link>https://dataspirits2.netlify.app/posts/2021-02-10-non-japanese-version/</link>
       <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://dataspirits2.netlify.app/posts/2021-02-10-rmarkdown-github-hugo-blogdown-netlify/</guid>
-      <description></description>
+      <guid>https://dataspirits2.netlify.app/posts/2021-02-10-non-japanese-version/</guid>
+      <description>R blogdownRでいろいろちまちま実行することが多いので簡単に（本当に簡単に）メモできる環境が欲しかったので作成。 環境構築時のコードをメモ。
+# blogdownのインストールdevtools::install_github(&amp;#39;rstudio/blogdown&amp;#39;)# hugoのインストールlibrary(blogdown)blogdown::install_hugo()Including PlotsなおRmarkdownでコードを実行するかどうかは次の通り。:
+include #コードと結果を表示しないecho #コードを表示しないmessage #メッセージを表示しないeval #コードを実行しないプロジェクトを作成した後↓
+#最初にnew_site()#これはちょっと古いっぽいnew_site(theme=&amp;quot;alanorth/hugo-theme-bootstrap4-blog&amp;quot;)#このブログはこれnew_site(theme=&amp;quot;vaga/hugo-theme-m10c&amp;quot;)# 編集内容を反映し統合build_site()# 反映内容を確認serve_site()#こういうのも必要らしいがまだやってないpublishDir = &amp;quot;docs&amp;quot;hasCJKLanguage = true#これも未使用new_content(&amp;quot;post/newContent.Rmd&amp;quot;)notepadいらねえなこれ。
+記事追加する時や編集するときはpublicじゃなくてcontentのほうを編集するっぽい。
+で、Knitしてpush。
+pushするときにチェックつけていくんだがTool→Shellで「git add -A」と打てばおｋ。
+アドインでNew postを使ったときは出来上がりの.Rmdのタイトルとかに&#34;&#34;がつかないので注意。
+</description>
     </item>
     
   </channel>
