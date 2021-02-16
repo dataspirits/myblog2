@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>図表もちゃんと出るか確認した // DataSpirits for R</title>
+    <title>壊れているパッケージの有無を確認 // DataSpirits for R</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.80.0" />
@@ -12,15 +12,17 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="図表もちゃんと出るか確認した"/>
-<meta name="twitter:description" content="R Markdownlibrary(tidyverse)library(tidyquant)FANG## # A tibble: 4,032 x 8## symbol date open high low close volume adjusted## &lt;chr&gt; &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;## 1 FB 2013-01-02 27.4 28.2 27.4 28 69846400 28 ## 2 FB 2013-01-03 27.9 28.5 27.6 27.8 63140600 27.8## 3 FB 2013-01-04 28.0 28.9 27.8 28.8 72715400 28.8## 4 FB 2013-01-07 28.7 29.8 28.6 29.4 83781800 29."/>
+<meta name="twitter:title" content="壊れているパッケージの有無を確認"/>
+<meta name="twitter:description" content="タイトルの通り。
+allPackages &lt;- installed.packages()[, 1]findBrokenPackages &lt;- function(packages) {for (p in packages) {tryCatch(ncol(asNamespace(p)$.__NAMESPACE__.$S3methods),error = function(e) print(c(p, e)))}}findBrokenPackages(allPackages)"/>
 
-    <meta property="og:title" content="図表もちゃんと出るか確認した" />
-<meta property="og:description" content="R Markdownlibrary(tidyverse)library(tidyquant)FANG## # A tibble: 4,032 x 8## symbol date open high low close volume adjusted## &lt;chr&gt; &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;## 1 FB 2013-01-02 27.4 28.2 27.4 28 69846400 28 ## 2 FB 2013-01-03 27.9 28.5 27.6 27.8 63140600 27.8## 3 FB 2013-01-04 28.0 28.9 27.8 28.8 72715400 28.8## 4 FB 2013-01-07 28.7 29.8 28.6 29.4 83781800 29." />
+    <meta property="og:title" content="壊れているパッケージの有無を確認" />
+<meta property="og:description" content="タイトルの通り。
+allPackages &lt;- installed.packages()[, 1]findBrokenPackages &lt;- function(packages) {for (p in packages) {tryCatch(ncol(asNamespace(p)$.__NAMESPACE__.$S3methods),error = function(e) print(c(p, e)))}}findBrokenPackages(allPackages)" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dataspirits2.netlify.app/posts/post5/" />
-<meta property="article:published_time" content="2021-02-10T00:00:00+00:00" />
-<meta property="article:modified_time" content="2021-02-10T00:00:00+00:00" />
+<meta property="og:url" content="https://dataspirits2.netlify.app/posts/2021-02-16-tips1/" />
+<meta property="article:published_time" content="2021-02-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-02-16T00:00:00+00:00" />
 
 
   </head>
@@ -53,14 +55,14 @@
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">図表もちゃんと出るか確認した</h1>
+      <h1 class ="post-title">壊れているパッケージの有無を確認</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
   <title>calendar</title>
   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
 </svg>
-          Feb 10, 2021
+          Feb 16, 2021
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
@@ -74,44 +76,24 @@
   <title>tag</title>
   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
 </svg>
-              <a class="tag" href="https://dataspirits2.netlify.app/tags/ggplot/">ggplot</a>
+              <a class="tag" href="https://dataspirits2.netlify.app/tags/tips/">tips</a>
         </div>
       </div>
     </header>
     <div class="post-content">
       
-<script src="https://dataspirits2.netlify.app/posts/post5/index_files/header-attrs/header-attrs.js"></script>
+<script src="https://dataspirits2.netlify.app/posts/2021-02-16-tips1/index_files/header-attrs/header-attrs.js"></script>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<pre class="r"><code>library(tidyverse)
-library(tidyquant)
-FANG</code></pre>
-<pre><code>## # A tibble: 4,032 x 8
-##    symbol date        open  high   low close    volume adjusted
-##    &lt;chr&gt;  &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 FB     2013-01-02  27.4  28.2  27.4  28    69846400     28  
-##  2 FB     2013-01-03  27.9  28.5  27.6  27.8  63140600     27.8
-##  3 FB     2013-01-04  28.0  28.9  27.8  28.8  72715400     28.8
-##  4 FB     2013-01-07  28.7  29.8  28.6  29.4  83781800     29.4
-##  5 FB     2013-01-08  29.5  29.6  28.9  29.1  45871300     29.1
-##  6 FB     2013-01-09  29.7  30.6  29.5  30.6 104787700     30.6
-##  7 FB     2013-01-10  30.6  31.5  30.3  31.3  95316400     31.3
-##  8 FB     2013-01-11  31.3  32.0  31.1  31.7  89598000     31.7
-##  9 FB     2013-01-14  32.1  32.2  30.6  31.0  98892800     31.0
-## 10 FB     2013-01-15  30.6  31.7  29.9  30.1 173242600     30.1
-## # ... with 4,022 more rows</code></pre>
-</div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>gglotを使ってみる。:</p>
-<pre class="r"><code>p &lt;- ggplot(data = FANG, mapping = aes(x=date, y=adjusted))
-p + geom_line() +
-    facet_wrap(~symbol, nrow = 2, scales = &quot;free_y&quot;)</code></pre>
-<p><img src="https://dataspirits2.netlify.app/posts/post5/index_files/figure-html/plot-1.png" width="672" /></p>
-<p>うまくいった。</p>
-</div>
+<p>タイトルの通り。</p>
+<pre class="r"><code>allPackages &lt;- installed.packages()[, 1]
+findBrokenPackages &lt;- function(packages) {
+  for (p in packages) {
+    tryCatch(ncol(asNamespace(p)$.__NAMESPACE__.$S3methods),
+             error = function(e) print(c(p, e)))
+  }
+}
+findBrokenPackages(allPackages)</code></pre>
 
     </div>
     <div class="post-footer">

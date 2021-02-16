@@ -20,6 +20,7 @@ view(starwars)
 
 ```
 
+
 ```{r chunk2}
 
 starwars %>% 
@@ -30,6 +31,7 @@ starwars %>%
   filter(n>1)
 
 ```
+
 
 ```{r chunk3}
 
