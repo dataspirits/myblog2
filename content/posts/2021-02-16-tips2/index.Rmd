@@ -1,0 +1,44 @@
+---
+title: 'dplyrでデータカウント'
+author: 'naruse'
+date: '2021-02-16'
+slug: []
+categories:
+  - R
+tags:
+  - tips
+---
+
+twitterで目に留まったのでメモ。
+
+重複しているデータの個数をカウントするときにdplyrでこういう書き方もできるよという話。
+
+```{r chunk1}
+
+library(tidyverse)
+view(starwars)
+
+```
+
+
+```{r chunk2}
+
+starwars %>% 
+  left_join(starwars %>% 
+              group_by(homeworld) %>% 
+              summarise(n=n()),
+            by="homeworld") %>% 
+  filter(n>1)
+
+```
+
+
+```{r chunk3}
+
+starwars %>% 
+  group_by(homeworld) %>% 
+  filter(n()>1)
+
+```
+
+上と下とで同じデータが生成される。
