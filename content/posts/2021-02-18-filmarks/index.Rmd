@@ -1,0 +1,162 @@
+---
+title: 'filmarksの映画レビューをスクレイピング2'
+author: 'naruse'
+date: '2021-02-18'
+slug: []
+categories:
+  - R
+tags:
+  - scraping
+---
+
+前回Filmarksに対して最も単純なスクレイピングを実践した。しかし同じ方法でMarks（その映画を見た人の数）やCalips（その映画を見たいと思っている人の数）を取得しようとすると、ブラウザで見えるHTMLの通りにデータを取得することができない。
+
+理由は[こちら](https://gammasoft.jp/blog/how-to-download-web-page-created-javascript/)。
+
+そこでブラウザを直接操作できるSeleniumというツールを使用する。Rだと`{RSelenium}`というパッケージがある。
+
+参考にしたのは[宇宙の本](https://www.amazon.co.jp/dp/B07F1KL3KR/ref=dp-kindle-redirect?_encoding=UTF8&btkr=1)の第2章。
+
+まずは必要なパッケージ等のインストール。
+
+```{r, eval=FALSE}
+
+#環境構築
+install.packages("RSelenium")
+library(wdman)
+selenium(retcommand = TRUE)
+
+```
+
+ここで、JAVAがないからエラーですと表示されたので、[JDK](https://www.oracle.com/technetwork/jp/java/javase/downloads/index.html)をダウンロード＆インストール。必要な設定をしたらエラーはなくなった。
+
+PythonでスクレイピングをしたときはChromeDriverをダウンロードしたりしたがそのあたりを上記のコマンドで一通りやってくれるのだそう。
+
+```{r, eval=FALSE}
+
+#パッケージの読み込み
+library(RSelenium)
+
+#chromeブラウザを立ち上げる
+rD <- rsDriver(verbose = FALSE, chromever = "88.0.4324.96") #port= 4837L
+#remoteDriverクラスの作成
+remDr <- rD[["client"]]
+
+```
+
+chromeverはデフォルトで最新になっているが自分のchromeは最新版なのに88だったのでここで指定。バージョンのオプションは`#binman::list_versions("chromedriver")`で確認できる。
+
+あと、Seleniumサーバーは2回以上使用すると「Selenium server signals port = 4567 is already in use.」というメッセージが表示されるが、適当なportを指定するかRstudio（R）を再起動すればよい。
+
+で、ブラウザを直接操作できる状態で前回と同様のこととするだけ。`navigate()`関数を使う。
+
+```{r, eval=FALSE}
+
+#結果を入れるハコ
+data <- data.frame()
+
+for(i in 1:101){
+  
+  fil_url <- paste0("https://filmarks.com/list/year/2020s/2020?page=",i)
+
+  remDr$navigate(fil_url)
+
+  #htmlを読み込むがリスト形式なのでベクトルに変換する。  
+  planeHtmlList <- remDr$getPageSource()
+  planeHtml <- unlist(planeHtmlList)
+  
+  title <- read_html(planeHtml) %>% 
+    html_nodes(css = ".p-content-cassette__title") %>% 
+    html_text()
+  
+  marks <- read_html(planeHtml) %>% 
+    html_nodes(css = ".p-content-cassette__action.p-content-cassette__action--marks") %>% 
+    html_text()
+  
+  clips <- read_html(planeHtml) %>% 
+    html_nodes(css = ".p-content-cassette__action.p-content-cassette__action--clips") %>% 
+    html_text()
+  
+  score <- read_html(planeHtml) %>% 
+    html_nodes(xpath = "//div[@class = 'p-content-cassette__info']//div[@class = 'c-rating__score']") %>% 
+    html_text()
+  
+  temp <- data.frame(title=title, marks=marks, clips=clips, score=score)
+  
+  data <- bind_rows(data,temp)
+  
+  #寝る。ブラウザを操作するのでちょっと長め。
+  Sys.sleep(3)
+}
+
+```
+
+```{r, include=FALSE}
+
+library(tidyverse)
+
+data <- read_csv("filmarks2.csv" ,locale=locale(encoding="CP932")) %>% 
+  select(-X1)
+
+```
+
+終わったらちゃんと片づける。
+
+```{r ,eval=FALSE}
+
+#ブラウザを閉じる
+remDr$close()
+#Seleniumサーバを閉じる
+rD[["server"]]$stop()
+
+```
+
+これで取得完了。相変わらず文字になっているので加工する。
+
+```{r}
+
+data_clean <- data %>% 
+  mutate(marks=as.numeric(gsub(marks,pattern="-",replacement = "0", ignore.case = TRUE))) %>% 
+  mutate(clips=as.numeric(gsub(clips,pattern="-",replacement = "0", ignore.case = TRUE))) %>% 
+  mutate(score=as.numeric(gsub(score,pattern="-",replacement = "0", ignore.case = TRUE)))
+
+```
+
+また、100人超に評価されている作品のみに絞って可視化することにした。
+
+```{r}
+
+data_over100 <- data_clean %>% 
+  filter(marks > 100)
+
+p1 <- ggplot(data_over100,aes(x=score))
+p1 + geom_histogram(breaks=seq(0,5,0.1))
+
+```
+
+だいぶ作品数減った。やはり最頻値は3.5。0が3件あるのは未公開の作品になぜかマークしてる人が100人超いたから。
+
+```{r}
+
+p1 <- ggplot(data_clean,aes(x=score,y=marks))
+p1 + geom_point()
+
+```
+
+スコアとマークの散布図。2トップはテネットと鬼滅。1万人以上にレビューされて3点未満の作品もあるのね。
+
+```{r}
+
+data_over100 %>% 
+  arrange(desc(score))
+
+data_over100 %>% 
+  arrange(score)
+
+```
+
+で、見たかった上位と下位。ハミルトンはアメリカ合衆国建国の父の1人アレキサンダーハミルトンについてのミュージカルを映画化したもの。1万人以上に評価されて4.4のヴァイオレット・エヴァーガーデンはアニメの映画化らしい。
+
+ミッドナイトスワン良さそうだな。見てみるか。
+
+下位のトップ3は前述の未公開作品。4位5位あたり、気になる。見ないけど。

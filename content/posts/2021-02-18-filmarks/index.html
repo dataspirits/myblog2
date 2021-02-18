@@ -1,0 +1,128 @@
+---
+title: 'filmarksの映画レビューをスクレイピング2'
+author: 'naruse'
+date: '2021-02-18'
+slug: []
+categories:
+  - R
+tags:
+  - scraping
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>前回Filmarksに対して最も単純なスクレイピングを実践した。しかし同じ方法でMarks（その映画を見た人の数）やCalips（その映画を見たいと思っている人の数）を取得しようとすると、ブラウザで見えるHTMLの通りにデータを取得することができない。</p>
+<p>理由は<a href="https://gammasoft.jp/blog/how-to-download-web-page-created-javascript/">こちら</a>。</p>
+<p>そこでブラウザを直接操作できるSeleniumというツールを使用する。Rだと<code>{RSelenium}</code>というパッケージがある。</p>
+<p>参考にしたのは<a href="https://www.amazon.co.jp/dp/B07F1KL3KR/ref=dp-kindle-redirect?_encoding=UTF8&amp;btkr=1">宇宙の本</a>の第2章。</p>
+<p>まずは必要なパッケージ等のインストール。</p>
+<pre class="r"><code>#環境構築
+install.packages(&quot;RSelenium&quot;)
+library(wdman)
+selenium(retcommand = TRUE)</code></pre>
+<p>ここで、JAVAがないからエラーですと表示されたので、<a href="https://www.oracle.com/technetwork/jp/java/javase/downloads/index.html">JDK</a>をダウンロード＆インストール。必要な設定をしたらエラーはなくなった。</p>
+<p>PythonでスクレイピングをしたときはChromeDriverをダウンロードしたりしたがそのあたりを上記のコマンドで一通りやってくれるのだそう。</p>
+<pre class="r"><code>#パッケージの読み込み
+library(RSelenium)
+
+#chromeブラウザを立ち上げる
+rD &lt;- rsDriver(verbose = FALSE, chromever = &quot;88.0.4324.96&quot;) #port= 4837L
+#remoteDriverクラスの作成
+remDr &lt;- rD[[&quot;client&quot;]]</code></pre>
+<p>chromeverはデフォルトで最新になっているが自分のchromeは最新版なのに88だったのでここで指定。バージョンのオプションは<code>#binman::list_versions("chromedriver")</code>で確認できる。</p>
+<p>あと、Seleniumサーバーは2回以上使用すると「Selenium server signals port = 4567 is already in use.」というメッセージが表示されるが、適当なportを指定するかRstudio（R）を再起動すればよい。</p>
+<p>で、ブラウザを直接操作できる状態で前回と同様のこととするだけ。<code>navigate()</code>関数を使う。</p>
+<pre class="r"><code>#結果を入れるハコ
+data &lt;- data.frame()
+
+for(i in 1:101){
+  
+  fil_url &lt;- paste0(&quot;https://filmarks.com/list/year/2020s/2020?page=&quot;,i)
+
+  remDr$navigate(fil_url)
+
+  #htmlを読み込むがリスト形式なのでベクトルに変換する。  
+  planeHtmlList &lt;- remDr$getPageSource()
+  planeHtml &lt;- unlist(planeHtmlList)
+  
+  title &lt;- read_html(planeHtml) %&gt;% 
+    html_nodes(css = &quot;.p-content-cassette__title&quot;) %&gt;% 
+    html_text()
+  
+  marks &lt;- read_html(planeHtml) %&gt;% 
+    html_nodes(css = &quot;.p-content-cassette__action.p-content-cassette__action--marks&quot;) %&gt;% 
+    html_text()
+  
+  clips &lt;- read_html(planeHtml) %&gt;% 
+    html_nodes(css = &quot;.p-content-cassette__action.p-content-cassette__action--clips&quot;) %&gt;% 
+    html_text()
+  
+  score &lt;- read_html(planeHtml) %&gt;% 
+    html_nodes(xpath = &quot;//div[@class = &#39;p-content-cassette__info&#39;]//div[@class = &#39;c-rating__score&#39;]&quot;) %&gt;% 
+    html_text()
+  
+  temp &lt;- data.frame(title=title, marks=marks, clips=clips, score=score)
+  
+  data &lt;- bind_rows(data,temp)
+  
+  #寝る。ブラウザを操作するのでちょっと長め。
+  Sys.sleep(3)
+}</code></pre>
+<p>終わったらちゃんと片づける。</p>
+<pre class="r"><code>#ブラウザを閉じる
+remDr$close()
+#Seleniumサーバを閉じる
+rD[[&quot;server&quot;]]$stop()</code></pre>
+<p>これで取得完了。相変わらず文字になっているので加工する。</p>
+<pre class="r"><code>data_clean &lt;- data %&gt;% 
+  mutate(marks=as.numeric(gsub(marks,pattern=&quot;-&quot;,replacement = &quot;0&quot;, ignore.case = TRUE))) %&gt;% 
+  mutate(clips=as.numeric(gsub(clips,pattern=&quot;-&quot;,replacement = &quot;0&quot;, ignore.case = TRUE))) %&gt;% 
+  mutate(score=as.numeric(gsub(score,pattern=&quot;-&quot;,replacement = &quot;0&quot;, ignore.case = TRUE)))</code></pre>
+<p>また、100人超に評価されている作品のみに絞って可視化することにした。</p>
+<pre class="r"><code>data_over100 &lt;- data_clean %&gt;% 
+  filter(marks &gt; 100)
+
+p1 &lt;- ggplot(data_over100,aes(x=score))
+p1 + geom_histogram(breaks=seq(0,5,0.1))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>だいぶ作品数減った。やはり最頻値は3.5。0が3件あるのは未公開の作品になぜかマークしてる人が100人超いたから。</p>
+<pre class="r"><code>p1 &lt;- ggplot(data_clean,aes(x=score,y=marks))
+p1 + geom_point()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>スコアとマークの散布図。2トップはテネットと鬼滅。1万人以上にレビューされて3点未満の作品もあるのね。</p>
+<pre class="r"><code>data_over100 %&gt;% 
+  arrange(desc(score))</code></pre>
+<pre><code>## # A tibble: 442 x 4
+##    title                                              marks clips score
+##    &lt;chr&gt;                                              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 ハミルトン                                           240   953   4.5
+##  2 KING OF PRISM ALL STARS プリズムショー☆ベストテン    391    98   4.5
+##  3 劇場版 ヴァイオレット・エヴァーガーデン            16702 17120   4.4
+##  4 BREAK THE SILENCE: THE MOVIE                        1275   471   4.3
+##  5 Reframe THEATER EXPERIENCE with you                  659   354   4.3
+##  6 蒼穹のファフナー THE BEYOND 第七話・第八話・第九話   128    96   4.3
+##  7 ミッドナイトスワン                                 15050 29399   4.2
+##  8 僕たちの嘘と真実 Documentary of 欅坂46              3480  1950   4.2
+##  9 オクトパスの神秘: 海の賢者は語る                     214   147   4.2
+## 10 映画 ギヴン                                          837   935   4.2
+## # ... with 432 more rows</code></pre>
+<pre class="r"><code>data_over100 %&gt;% 
+  arrange(score)</code></pre>
+<pre><code>## # A tibble: 442 x 4
+##    title                                  marks clips score
+##    &lt;chr&gt;                                  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 キングスマン：ファースト・エージェント   433 59474   0  
+##  2 シン・エヴァンゲリオン劇場版             342 26151   0  
+##  3 トップガン マーヴェリック                130 15400   0  
+##  4 マーク・オブ・ザ・デビル                 234    44   2.2
+##  5 君は彼方                                 136   642   2.2
+##  6 Le Cerveau - セルヴォ -                  117     7   2.2
+##  7 別れる前にしておくべき10のこと           207   200   2.5
+##  8 巨蟲列島                                 122   106   2.5
+##  9 シグナル100                             2894  2608   2.6
+## 10 『犬鳴村』恐怖回避ばーじょん 劇場版      328   508   2.6
+## # ... with 432 more rows</code></pre>
+<p>で、見たかった上位と下位。ハミルトンはアメリカ合衆国建国の父の1人アレキサンダーハミルトンについてのミュージカルを映画化したもの。1万人以上に評価されて4.4のヴァイオレット・エヴァーガーデンはアニメの映画化らしい。</p>
+<p>ミッドナイトスワン良さそうだな。見てみるか。</p>
+<p>下位のトップ3は前述の未公開作品。4位5位あたり、気になる。見ないけど。</p>
