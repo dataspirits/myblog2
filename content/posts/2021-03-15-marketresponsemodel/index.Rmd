@@ -1,0 +1,173 @@
+---
+title: '動的市場反応モデル'
+author: 'naruse'
+date: '2021-03-15'
+slug: []
+categories:
+  - R
+tags:
+  - statistics
+  - marketing
+---
+
+[こちら](https://ill-identified.hatenablog.com/entry/2017/09/06/000515)を参考にKFASで遷移式のaを求める場合のコード。
+
+自分用のメモなのでオリジナリティは皆無。万が一他の方が辿り着いたら上記を参照ください。
+
+まずは関数部分（変更なし）。
+
+```{r, eval=FALSE}
+
+# ------ common part ----
+
+require(ggplot2)
+require(dplyr)
+require(tidyr)
+require(KFAS) # 1.2.9
+
+# calculate the reference price
+calc_RP <- function(RP, p, a){
+  for( i in 2:length(RP)){
+    RP[i] <- a * RP[i-1] + (1-a) * p[i-1]
+  }
+  return(RP)
+}
+
+# calculate Z
+calc_Z <- function(RP, p){
+  z_1 <- 0
+  z_2 <- 0
+  v_wk <- p - RP
+  n <- length(RP)
+  for (i in 1:n){
+    if (v_wk[i] >= 0) {                 
+      z_1[i] <- v_wk[i] / 100
+    } else {
+      z_1[i] <- 0
+    }
+    if (v_wk[i] < 0) {                 
+      z_2[i] <- - v_wk[i] / 100
+    } else {
+      z_2[i] <- 0
+    }
+  }
+  return(list(z1 = z_1, z2 = z_2))
+}
+
+# read the data
+#ID_W:週ID
+#end:エンド陳列の有無
+#logPI:点数PIの対数
+#AP:売価
+#RP095:参照価格(繰越パラメータ0.95：RP_t=0.95*RP_{t-1}+(1-0.95)*AP_{t-1})
+df <- read.csv("test.csv")
+
+ggplot(gather(df, key = series, value = value, - aID_W)) +
+  geom_line(aes(x = aID_W, y = value, group = series), color = "grey") + 
+  facet_wrap(~ series, scales = "free") + labs(x = "week", y = "") +
+  scale_color_discrete(guide = F) + expand_limits(y = 0) + theme_bw()
+
+```
+
+続いてKFASでAIC最小化。
+
+```{r, eval=FALSE}
+
+source("common.R", encoding = "utf-8")
+
+# ----- KFAS ------
+
+res <- data.frame()
+
+for(a in seq(from = .1, to = .95, by = .05)){
+  
+RP <- calc_RP(RP = df$RP095, p = df$AP, a = a)
+z <- calc_Z(RP = RP, p = df$AP)
+z1 <- z$z1
+z2 <- z$z2
+z1E <- z$z1 * df$end
+z2E <- z$z2 * df$end
+
+# model settings
+# params[1] = obs. noise variance
+# params[2] = local trend noise variance
+# params[3:6] = noises variance of alpha_1, beta_1, alpha_2, beta_2
+# params[7:8] = AR coefs
+# params[9] = AR(2) noise variance
+  model3KFAS <- SSModel(logPI ~ SSMtrend(1, Q = NA) +
+                          SSMarima(ar = c(.1, .1), Q = 0) +
+                          SSMregression(~ z1 + z1E + z2 + z2E, Q = diag(rep(NA, 4))),
+                        H=NA, data = df, distribution = "gaussian")
+
+# estimate unknown parameters
+update.model <- function(pars, model){
+  model$H[] <- exp(pars[1])
+  diag(model$Q[, , 1])[1:6] <- exp(pars[2:7])
+  model$T[6:7, 6, 1] <- tanh(pars[8:9])
+  return(model)
+}
+
+# estimate structural params
+e <- try({res.mle.kfas <- fitSSM(model = model3KFAS, updatefn = update.model,
+            inits = numeric(9), maxit = 1000000, method = "L-BFGS-B", hessian = T)
+})
+if (class(e) == "try-error") {
+}
+else {
+  res <- bind_rows(res,
+                   data.frame(
+                     a = a,
+                     conv = res.mle.kfas$optim.out$convergence, loglike = - res.mle.kfas$optim.out$value,
+                     AIC = 2 * res.mle.kfas$optim.out$value + 2 * 10,
+                     matrix(res.mle.kfas$optim.out$par, nrow = 1))
+  )
+}
+}
+
+res[,5:10] <- exp(res[,5:10])
+res[,12:13] <- tanh(res[,12:13])
+res[,11] <- exp(res[,11])
+
+result <- filter(res, conv == 0) %>% arrange(desc(loglike))
+
+a <- result$a[1]
+RP <- calc_RP(RP = df$RP095, p = df$AP, a = a)
+z <- calc_Z(RP = RP, p = df$AP)
+# create the design matrix
+x<-cbind(z$z1, z$z2, z$z1 * df$end, z$z2 * df$end)
+parameters <- result[1,5:ncol(result)] %>% as.numeric
+print(paste("AIC=", round(2 * result$loglike[1] + 2 * (ncol(result) - 4), 2)))
+
+mod4 <- SSModel(logPI ~ SSMtrend(1, Q = parameters[6]) +
+                          SSMarima(ar = c(parameters[8], parameters[9]), Q = parameters[7]) +
+                          SSMregression(~ z1 + z1E + z2 + z2E, Q = diag(parameters[2:5])),
+                        H = parameters[1], data = df, distribution = "gaussian")
+  
+coef(KFS(mod4))
+
+# smoothed time-varying parameters
+ggplot(data.frame(coef(KFS(mod4))) %>% 
+         mutate(t=1:n()) %>% 
+         gather(key=series, value=value, -t)) +
+  geom_line(aes(x=t, y=value, group=series), color="grey") + 
+  facet_wrap(~series, scales = "free") +
+  labs(x="week", y="") + theme_bw()
+
+
+# ---- without AR(2) ----
+model2 <- SSModel(logPI ~ SSMtrend(1, Q = NA) + 
+                    SSMregression(~ z1 + z1E + z2 + z2E, Q=diag(rep(NA, 4))), 
+                  data=df, H = NA)
+fit.model2 <- fitSSM(model2, inits=numeric(6), method="L-BFGS-B")
+# convergence check
+fit.model2$optim.out$convergence
+# log likelihood
+-fit.model2$optim.out$value
+# smoothed time-varying parameterss
+ggplot(data.frame(coef(KFS(fit.model2$model))) %>% mutate(t=1:n()) %>% gather(key=series, value=value, -t)) +
+  geom_line(aes(x=t, y=value, group=series), color="grey") +
+  facet_wrap(~series, scales = "free") +
+  labs(x="week", y="") +
+  theme_bw()
+
+```
